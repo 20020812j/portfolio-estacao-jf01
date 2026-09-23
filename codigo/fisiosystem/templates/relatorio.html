@@ -1,0 +1,74 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head no-print"><h1>Relatório</h1><button class="btn primary" onclick="window.print()">Imprimir / Salvar PDF</button></div>
+<article class="report">
+<h1>Relatório fisioterapêutico</h1>
+<h2>{{ paciente.nome }}</h2>
+<p>Telefone: {{ paciente.telefone or '-' }} | CPF: {{ paciente.cpf or '-' }}</p>
+<hr>
+
+{% if comparacao.primeira %}
+<h3>Comparação: avaliação inicial vs. registro mais recente</h3>
+<table>
+  <caption class="visually-hidden">Comparação entre a avaliação inicial e o registro mais recente</caption>
+  <tr>
+    <th scope="col"><span class="visually-hidden">Indicador</span></th>
+    <th scope="col">Avaliação inicial ({{ comparacao.primeira.data_avaliacao.strftime('%d/%m/%Y') }})</th>
+    <th scope="col">{{ comparacao.ultimo.origem if comparacao.ultimo else 'Sem registro posterior' }}{% if comparacao.ultimo_data %} ({{ comparacao.ultimo_data.strftime('%d/%m/%Y') }}){% endif %}</th>
+  </tr>
+  <tr>
+    <th scope="row">EVA</th>
+    <td>{{ comparacao.primeira.eva if comparacao.primeira.eva is not none else '-' }}</td>
+    <td>{{ comparacao.ultimo.eva if comparacao.ultimo and comparacao.ultimo.eva is not none else '-' }}</td>
+  </tr>
+  <tr>
+    <th scope="row">IMC</th>
+    <td>{{ comparacao.primeira.imc or '-' }}</td>
+    <td>{{ comparacao.ultimo.imc if comparacao.ultimo and comparacao.ultimo.imc else '-' }}</td>
+  </tr>
+  <tr>
+    <th scope="row">Goniometria</th>
+    <td>{{ comparacao.primeira.goniometria or '-' }}</td>
+    <td>{{ comparacao.ultimo.goniometria if comparacao.ultimo and comparacao.ultimo.goniometria else '-' }}</td>
+  </tr>
+  <tr>
+    <th scope="row">Força muscular</th>
+    <td>{{ comparacao.primeira.forca_muscular or '-' }}</td>
+    <td>{{ comparacao.ultimo.forca_muscular if comparacao.ultimo and comparacao.ultimo.forca_muscular else '-' }}</td>
+  </tr>
+</table>
+<hr>
+{% endif %}
+
+{% if eva_valores %}
+<h3>Evolução da dor (EVA) ao longo do tratamento</h3>
+<canvas id="evaChartRelatorio" height="90" role="img" aria-label="Gráfico de linha mostrando a evolução da dor (EVA) do paciente ao longo do tratamento"></canvas>
+<script>
+new Chart(document.getElementById('evaChartRelatorio'), {
+  type: 'line',
+  data: {
+    labels: {{ eva_labels|tojson }},
+    datasets: [{ label: 'EVA', data: {{ eva_valores|tojson }}, tension: .25, borderColor: '#168a55', backgroundColor: '#eaf7f0' }]
+  },
+  options: { scales: { y: { min: 0, max: 10 } }, plugins: { legend: { display: false } } }
+});
+</script>
+<hr>
+{% endif %}
+
+<h3>Avaliações</h3>
+{% for a in avaliacoes %}
+<p><strong>{{ a.data_avaliacao.strftime('%d/%m/%Y') }}</strong> — EVA: {{ a.eva if a.eva is not none else '-' }}, IMC: {{ a.imc or '-' }}</p>
+<p><strong>Queixa:</strong> {{ a.queixa_principal or '-' }}</p>
+<p><strong>Diagnóstico fisioterapêutico:</strong> {{ a.diagnostico_fisioterapeutico or '-' }}</p>
+{% endfor %}
+<h3>Evoluções</h3>
+{% for e in evolucoes %}<p><strong>{{ e.data_sessao.strftime('%d/%m/%Y') }} — Sessão {{ e.numero_sessao or '-' }}</strong><br>{{ e.evolucao or '' }}</p>{% endfor %}
+<h3>Reavaliações</h3>
+{% for r in reavaliacoes %}<p><strong>{{ r.data_reavaliacao.strftime('%d/%m/%Y') }}</strong> — EVA {{ r.eva if r.eva is not none else '-' }}, IMC {{ r.imc or '-' }}<br>{{ r.observacoes or '' }}</p>{% endfor %}
+{% if alta %}<h3>Alta</h3><p>{{ alta.data_alta.strftime('%d/%m/%Y') }} — {{ alta.condicao_final or '' }}</p>{% endif %}
+<hr>
+<p>Profissional: {{ current_user.nome }}{% if current_user.crefito %} — CREFITO {{ current_user.crefito }}{% endif %}</p>
+</article>
+{% endblock %}

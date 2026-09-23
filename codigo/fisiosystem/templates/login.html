@@ -1,0 +1,26 @@
+\
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | FisioSystem</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <div class="brand big">Fisio<span>System</span></div>
+    <p>Gestão e evolução fisioterapêutica</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="alert {{ category }}" role="alert">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <form method="post">
+      <label for="login-username">Usuário</label>
+      <input id="login-username" name="username" required autocomplete="username" autofocus>
+      <label for="login-senha">Senha</label>
+      <input id="login-senha" type="password" name="senha" required autocomplete="current-password">
+      <button class="btn primary" type="submit">Entrar</button>
+    </form>
+  </div>
+</body>
+</html>

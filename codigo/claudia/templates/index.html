@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">Sabor que lembra casa de mãe</span>
+    <h1>Comida caseira feita com carinho e entregue quentinha para você!</h1>
+    <p>Pratos bem servidos, ingredientes selecionados e aquele tempero que faz a diferença.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="{{ url_for('menu') }}">Ver cardápio</a>
+      <a class="btn outline" href="{{ url_for('menu') }}">Fazer pedido 🛒</a>
+    </div>
+  </div>
+  <div class="hero-food">
+    <div class="food-bowl">🍛</div>
+    <div class="promo">Promoção<br><strong>R$ 25,00</strong></div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div>🍲 <span><strong>Feito com carinho</strong><small>Ingredientes selecionados</small></span></div>
+  <div>🛵 <span><strong>Entregamos para você</strong><small>Rápido e seguro</small></span></div>
+  <div>🛡️ <span><strong>Pagamento seguro</strong><small>Pix e cartão no site</small></span></div>
+</section>
+
+<section class="section">
+  <div class="section-title"><span>Cardápio de Hoje</span><h2>Confira nossas delícias</h2></div>
+  <div class="product-grid">
+    {% for product in products %}
+      {% include "_product_card.html" %}
+    {% endfor %}
+  </div>
+  <div class="center"><a class="btn outline" href="{{ url_for('menu') }}">Ver cardápio completo</a></div>
+</section>
+
+<section class="how section" id="como-funciona">
+  <div class="section-title"><h2>Como funciona</h2></div>
+  <div class="steps">
+    <article><b>1</b><span>🍽️</span><h3>Escolha seus pratos</h3><p>Monte seu pedido no cardápio.</p></article>
+    <article><b>2</b><span>🏠</span><h3>Informe o endereço</h3><p>Escolha entrega ou retirada.</p></article>
+    <article><b>3</b><span>💳</span><h3>Pague no site</h3><p>Pix ou cartão com segurança.</p></article>
+    <article><b>4</b><span>📦</span><h3>Receba quentinho</h3><p>Acompanhe o andamento do pedido.</p></article>
+  </div>
+</section>
+{% endblock %}

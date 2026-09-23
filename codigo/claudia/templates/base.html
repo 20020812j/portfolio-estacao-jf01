@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#174d2b">
+  <title>{% block title %}Cláudia Santos Delícias Caseiras{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="{{ url_for('home') }}">
+    <span class="brand-icon">🍲</span>
+    <span><strong>Cláudia Santos</strong><small>Delícias Caseiras</small></span>
+  </a>
+  <button class="mobile-menu" aria-label="Abrir menu">☰</button>
+  <nav>
+    <a href="{{ url_for('home') }}">Início</a>
+    <a href="{{ url_for('menu') }}">Cardápio</a>
+    <a href="{{ url_for('home') }}#como-funciona">Como funciona</a>
+    <a href="https://wa.me/{{ restaurant_phone }}" target="_blank">Contato</a>
+    <a class="cart-link" href="{{ url_for('cart') }}">🛒 <b id="cart-count">{{ cart_count }}</b></a>
+  </nav>
+</header>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-wrap">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer>
+  <div><strong>Cláudia Santos Delícias Caseiras</strong><br>Comida caseira feita com carinho.</div>
+  <div>Pedidos: <a href="https://wa.me/{{ restaurant_phone }}">WhatsApp</a></div>
+</footer>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

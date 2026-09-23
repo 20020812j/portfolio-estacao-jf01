@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Entrega | Cláudia Santos{% endblock %}
+{% block content %}
+<section class="checkout-shell">
+  <form class="checkout-main form-card" method="post">
+    <div class="steps-bar"><b class="active">1 Carrinho</b><b class="active">2 Entrega</b><b>3 Pagamento</b><b>4 Confirmação</b></div>
+    <h1>Endereço e entrega</h1>
+    <div class="form-grid">
+      <label>Nome completo*<input name="customer_name" required></label>
+      <label>Telefone*<input name="phone" required placeholder="(37) 99999-9999"></label>
+      <label>E-mail*<input type="email" name="email" required></label>
+      <label>CPF<input name="cpf" placeholder="Necessário para alguns pagamentos"></label>
+    </div>
+    <h3>Como deseja receber?</h3>
+    <div class="choice-row">
+      <label class="choice"><input type="radio" name="delivery_type" value="delivery" checked> 🛵 Entrega <small>{{ delivery_fee|brl }}</small></label>
+      <label class="choice"><input type="radio" name="delivery_type" value="pickup"> 🏪 Retirada <small>Grátis</small></label>
+    </div>
+    <div id="address-fields" class="form-grid">
+      <label>CEP*<input name="cep" id="cep" maxlength="9"><small id="cep-status"></small></label>
+      <label>Rua*<input name="street" id="street"></label>
+      <label>Número*<input name="number"></label>
+      <label>Bairro*<input name="neighborhood" id="neighborhood"></label>
+      <label class="wide">Complemento<input name="complement"></label>
+    </div>
+    <label>Observações<textarea name="notes" placeholder="Ex.: sem pimenta, retirar cebola..."></textarea></label>
+    <button class="btn primary full">Ir para pagamento</button>
+  </form>
+  <aside class="summary">
+    <h2>Seu pedido</h2>
+    {% for item in items %}
+      <div><span>{{ item.quantity }}x {{ item.name }}</span><strong>{{ item.total|brl }}</strong></div>
+    {% endfor %}
+    <hr>
+    <div><span>Subtotal</span><strong>{{ subtotal|brl }}</strong></div>
+    <div><span>Taxa de entrega</span><strong id="fee">{{ delivery_fee|brl }}</strong></div>
+    <div class="total"><span>Total</span><strong id="checkout-total">{{ (subtotal + delivery_fee)|brl }}</strong></div>
+  </aside>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+const subtotal = {{ subtotal }};
+const fee = {{ delivery_fee }};
+const formatBRL = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+document.querySelectorAll('[name=delivery_type]').forEach(r => r.addEventListener('change', e => {
+  const delivery = e.target.value === 'delivery';
+  document.getElementById('address-fields').style.display = delivery ? 'grid' : 'none';
+  document.querySelectorAll('#address-fields input').forEach(i => i.required = delivery && ['cep','street','number','neighborhood'].includes(i.name));
+  document.getElementById('fee').textContent = formatBRL(delivery ? fee : 0);
+  document.getElementById('checkout-total').textContent = formatBRL(subtotal + (delivery ? fee : 0));
+}));
+document.getElementById('cep').addEventListener('blur', async e => {
+  const cep = e.target.value.replace(/\D/g,'');
+  if(cep.length !== 8) return;
+  const s = document.getElementById('cep-status'); s.textContent='Buscando...';
+  try{
+    const d = await fetch(`https://viacep.com.br/ws/${cep}/json/`).then(r=>r.json());
+    if(d.erro) throw Error();
+    document.getElementById('street').value=d.logradouro||'';
+    document.getElementById('neighborhood').value=d.bairro||'';
+    s.textContent='Endereço encontrado';
+  }catch{ s.textContent='CEP não encontrado'; }
+});
+</script>
+{% endblock %}

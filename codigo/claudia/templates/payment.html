@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Pagamento | Cláudia Santos{% endblock %}
+{% block head %}
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+{% endblock %}
+{% block content %}
+<section class="payment-page">
+  <div class="steps-bar"><b class="active">1 Carrinho</b><b class="active">2 Entrega</b><b class="active">3 Pagamento</b><b>4 Confirmação</b></div>
+  <div class="payment-grid">
+    <div class="form-card">
+      <h1>Pagamento seguro</h1>
+      <p>Escolha Pix ou cartão. O processamento é feito pelo Mercado Pago.</p>
+      {% if not mp_public_key %}
+      <div class="flash danger">Configure MP_PUBLIC_KEY no arquivo .env para carregar o pagamento.</div>
+      {% endif %}
+      <div id="paymentBrick_container"></div>
+      <div id="payment-message"></div>
+      <div id="pix-result" class="pix-result hidden">
+        <h2>Pague com Pix</h2>
+        <img id="pix-image" alt="QR Code Pix">
+        <textarea id="pix-code" readonly></textarea>
+        <button class="btn outline" type="button" id="copy-pix">Copiar código Pix</button>
+        <a id="finish-link" class="btn primary" href="{{ url_for('order_status', order_id=order.id) }}">Acompanhar pedido</a>
+      </div>
+    </div>
+    <aside class="summary">
+      <h2>Pedido #{{ order.id }}</h2>
+      <div><span>Subtotal</span><strong>{{ order.subtotal|brl }}</strong></div>
+      <div><span>Entrega</span><strong>{{ order.delivery_fee|brl }}</strong></div>
+      <hr>
+      <div class="total"><span>Total</span><strong>{{ order.total|brl }}</strong></div>
+      <small>Seus dados de cartão não passam pelo nosso servidor sem tokenização.</small>
+    </aside>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+const publicKey = {{ mp_public_key|tojson }};
+const orderId = {{ order.id }};
+const total = {{ order.total }};
+const message = document.getElementById('payment-message');
+
+async function sendPayment(formData) {
+  message.innerHTML = '<div class="flash warning">Processando pagamento...</div>';
+  const response = await fetch(`/api/process_payment/${orderId}`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(formData)
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'Não foi possível processar o pagamento.');
+  if (result.qr_code) {
+    document.getElementById('pix-result').classList.remove('hidden');
+    document.getElementById('pix-code').value = result.qr_code;
+    document.getElementById('pix-image').src = `data:image/png;base64,${result.qr_code_base64}`;
+    message.innerHTML = '<div class="flash success">Pix criado. Faça o pagamento para confirmar.</div>';
+  } else if (result.status === 'approved') {
+    window.location.href = `/pedido/${orderId}`;
+  } else {
+    window.location.href = `/pedido/${orderId}`;
+  }
+  return result;
+}
+
+if (publicKey) {
+  const mp = new MercadoPago(publicKey, {locale:'pt-BR'});
+  const bricks = mp.bricks();
+  bricks.create('payment', 'paymentBrick_container', {
+    initialization: { amount: total },
+    customization: {
+      paymentMethods: {
+        creditCard: 'all',
+        debitCard: 'all',
+        bankTransfer: 'all',
+        maxInstallments: 6
+      },
+      visual: {
+        style: {
+          theme: 'default',
+          customVariables: {
+            baseColor: '#174d2b',
+            buttonTextColor: '#ffffff'
+          }
+        }
+      }
+    },
+    callbacks: {
+      onReady: () => {},
+      onSubmit: ({selectedPaymentMethod, formData}) => sendPayment(formData),
+      onError: error => {
+        console.error(error);
+        message.innerHTML = '<div class="flash danger">Erro ao carregar o pagamento. Confira as credenciais.</div>';
+      }
+    }
+  });
+}
+document.getElementById('copy-pix').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(document.getElementById('pix-code').value);
+  document.getElementById('copy-pix').textContent = 'Código copiado!';
+});
+</script>
+{% endblock %}

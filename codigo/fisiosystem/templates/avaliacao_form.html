@@ -1,0 +1,23 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ titulo }} — {{ paciente.nome }}</h1>
+<form class="card form-grid" method="post">
+<label>Data<input type="date" name="data_avaliacao"></label>
+<label>Peso (kg)<input type="number" step="0.01" name="peso"></label>
+<label>Altura (m)<input type="number" step="0.01" name="altura"></label>
+<label>EVA (0–10)<input type="number" min="0" max="10" name="eva"></label>
+<label class="full">Queixa principal<textarea name="queixa_principal"></textarea></label>
+<label class="full">História da doença atual<textarea name="historia_doenca"></textarea></label>
+<label class="full">Antecedentes<textarea name="antecedentes"></textarea></label>
+<label class="full">Medicamentos<textarea name="medicamentos"></textarea></label>
+<label class="full">Diagnóstico médico<textarea name="diagnostico_medico"></textarea></label>
+<label class="full">Diagnóstico fisioterapêutico<textarea name="diagnostico_fisioterapeutico"></textarea></label>
+<label class="full">Goniometria<textarea name="goniometria" placeholder="Ex.: Joelho D - flexão: 105°"></textarea></label>
+<label class="full">Força muscular<textarea name="forca_muscular" placeholder="Ex.: Quadríceps D: 4/5"></textarea></label>
+<label class="full">Objetivos<textarea name="objetivos"></textarea></label>
+<label class="full">Conduta<textarea name="conduta"></textarea></label>
+<label class="full">Observações<textarea name="observacoes"></textarea></label>
+<div class="full"><button class="btn primary">Salvar avaliação</button></div>
+</form>
+{% endblock %}

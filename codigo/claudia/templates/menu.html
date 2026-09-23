@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Cardápio | Cláudia Santos{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <span class="eyebrow">Escolha suas delícias</span>
+  <h1>Cardápio</h1>
+  <p>Pratos caseiros preparados com ingredientes frescos.</p>
+</section>
+{% for category, products in categories.items() %}
+<section class="section compact">
+  <div class="section-title left"><h2>{{ category }}</h2></div>
+  <div class="product-grid">
+    {% for product in products %}
+      {% include "_product_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+{% endblock %}

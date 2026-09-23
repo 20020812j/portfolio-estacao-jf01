@@ -1,0 +1,59 @@
+\
+{% extends "base.html" %}
+{% block title %}Dashboard | FisioSystem{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Dashboard</h1><p>Olá, {{ current_user.nome }}.</p></div>
+  <a class="btn primary" href="{{ url_for('novo_paciente') }}">+ Novo paciente</a>
+</div>
+<div class="stats">
+  <div class="stat"><span class="stat-icon" aria-hidden="true">🧑‍🤝‍🧑</span><strong>{{ total_pacientes }}</strong><span>Pacientes</span></div>
+  <div class="stat"><span class="stat-icon" aria-hidden="true">📈</span><strong>{{ ativos }}</strong><span>Em acompanhamento</span></div>
+  <div class="stat"><span class="stat-icon" aria-hidden="true">📝</span><strong>{{ sessoes }}</strong><span>Evoluções registradas</span></div>
+  <div class="stat"><span class="stat-icon" aria-hidden="true">✅</span><strong>{{ altas_mes }}</strong><span>Altas este mês</span></div>
+</div>
+
+<div class="dash-grid">
+  <section class="card">
+    <h2>Pacientes por status</h2>
+    <canvas id="statusChart" height="200" role="img" aria-label="Gráfico de rosca mostrando a quantidade de pacientes por status de atendimento"></canvas>
+  </section>
+  <section class="card">
+    <h2>Evoluções nos últimos 6 meses</h2>
+    <canvas id="sessoesChart" height="200" role="img" aria-label="Gráfico de barras mostrando o número de evoluções registradas em cada um dos últimos 6 meses"></canvas>
+  </section>
+</div>
+
+<section class="card">
+  <h2>Agenda de hoje</h2>
+  {% if agenda_hoje %}
+    <ul class="record-list">
+    {% for a in agenda_hoje %}
+      <li class="row-line"><span>{{ a.inicio.strftime('%H:%M') }}</span><span>{{ pacientes_agenda.get(a.paciente_id, 'Paciente #' ~ a.paciente_id) }}</span><span class="badge">{{ a.status }}</span></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">Nenhum atendimento agendado para hoje.</p>
+  {% endif %}
+</section>
+
+<script>
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: {
+    labels: {{ status_labels|tojson }},
+    datasets: [{ data: {{ status_counts|tojson }}, backgroundColor: ['#f2c94c', '#168a55', '#2f9bd6', '#6a7b74'] }]
+  },
+  options: { plugins: { legend: { position: 'bottom' } } }
+});
+new Chart(document.getElementById('sessoesChart'), {
+  type: 'bar',
+  data: {
+    labels: {{ meses_labels|tojson }},
+    datasets: [{ label: 'Evoluções', data: {{ meses_valores|tojson }}, backgroundColor: '#168a55', borderRadius: 6 }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+});
+</script>
+{% endblock %}
+

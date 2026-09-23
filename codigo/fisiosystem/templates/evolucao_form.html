@@ -1,0 +1,14 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>Nova evolução — {{ paciente.nome }}</h1>
+<form class="card form-grid" method="post">
+<label>Data<input type="date" name="data_sessao"></label>
+<label>EVA antes<input type="number" min="0" max="10" name="eva_antes"></label>
+<label>EVA depois<input type="number" min="0" max="10" name="eva_depois"></label>
+<label class="full">Procedimentos<textarea name="procedimentos"></textarea></label>
+<label class="full">Evolução<textarea name="evolucao"></textarea></label>
+<label class="full">Conduta para próxima sessão<textarea name="proxima_conduta"></textarea></label>
+<div class="full"><button class="btn primary">Salvar evolução</button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>José Flaviano | Estação JF-01</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="estacao">
+    <div class="espaco"></div>
+
+    <header class="cabecalho">
+        <div class="logo">
+            <strong>JF</strong>
+            <div>
+                <span>JOSÉ FLAVIANO</span>
+                <small>DESENVOLVEDOR FRONT-END</small>
+            </div>
+        </div>
+        <div class="status-estacao">
+            <span></span> ESTAÇÃO JF-01 ONLINE
+        </div>
+    </header>
+
+    <section class="apresentacao">
+        <p>OLÁ, VIAJANTE!</p>
+        <h1>EU SOU JOSÉ FLAVIANO.</h1>
+        <p>Desenvolvedor em formação, construindo aplicações web com foco em interfaces, sistemas e soluções reais.</p>
+    </section>
+
+    <section class="setores">
+        <button class="setor sobre" data-setor="sobre">SOBRE MIM</button>
+        <button class="setor projetos" data-setor="projetos">PROJETOS</button>
+        <button class="setor tecnologias" data-setor="tecnologias">TECNOLOGIAS</button>
+        <button class="setor experiencia" data-setor="experiencia">EXPERIÊNCIA</button>
+        <button class="setor formacao" data-setor="formacao">FORMAÇÃO</button>
+        <button class="setor jornada" data-setor="jornada">JORNADA</button>
+    </section>
+
+    <div class="nucleo">JF</div>
+
+    <p class="instrucao">SELECIONE UM SETOR DA ESTAÇÃO</p>
+
+    <div class="modal" id="modal">
+        <div class="modal-conteudo">
+            <button id="fechar">✕</button>
+            <div id="conteudo-modal"></div>
+        </div>
+    </div>
+
+    <div class="codigo-modal" id="codigo-modal">
+        <div class="codigo-conteudo">
+            <div class="codigo-cabecalho">
+                <div>
+                    <span class="codigo-status"></span>
+                    <span id="codigo-titulo">EXPLORADOR DE CÓDIGO</span>
+                </div>
+                <button id="fechar-codigo">✕</button>
+            </div>
+
+            <div class="codigo-corpo">
+                <aside class="arquivos">
+                    <div class="arquivos-titulo">PROJETO</div>
+                    <div id="lista-arquivos"></div>
+                </aside>
+
+                <section class="codigo-area">
+                    <div class="codigo-arquivo-header">
+                        <span id="nome-arquivo">Selecione um arquivo</span>
+                        <button id="copiar-codigo">📋 Copiar</button>
+                    </div>
+                    <pre><code id="codigo-exibido"></code></pre>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>Alta fisioterapêutica — {{ paciente.nome }}</h1>
+<form class="card form-grid" method="post">
+<label>Data da alta<input type="date" name="data_alta" value="{{ alta.data_alta if alta else '' }}"></label>
+<label class="full">Motivo<textarea name="motivo">{{ alta.motivo if alta else '' }}</textarea></label>
+<label class="full">Condição final<textarea name="condicao_final">{{ alta.condicao_final if alta else '' }}</textarea></label>
+<label class="full">Objetivos alcançados<textarea name="objetivos_alcancados">{{ alta.objetivos_alcancados if alta else '' }}</textarea></label>
+<label class="full">Recomendações<textarea name="recomendacoes">{{ alta.recomendacoes if alta else '' }}</textarea></label>
+<div class="full"><button class="btn primary">Registrar alta</button></div>
+</form>
+{% endblock %}

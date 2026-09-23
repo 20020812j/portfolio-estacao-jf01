@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Pedido #{{ order.id }}{% endblock %}
+{% block content %}
+<section class="status-page">
+  <div class="success-icon">✓</div>
+  <h1>Pedido #{{ order.id }}</h1>
+  {% if order.payment_status == 'approved' %}
+    <p class="status-approved">Pagamento aprovado</p>
+  {% elif order.payment_status == 'pending' %}
+    <p class="status-pending">Aguardando confirmação do pagamento</p>
+  {% else %}
+    <p class="status-rejected">Pagamento: {{ order.payment_status }}</p>
+  {% endif %}
+  <div class="timeline">
+    {% set statuses = ['new','preparing','delivery','completed'] %}
+    {% set current = statuses.index(order.order_status) if order.order_status in statuses else 0 %}
+    {% for key, icon, label in [
+      ('new','✓','Pedido recebido'),
+      ('preparing','🍲','Em preparo'),
+      ('delivery','🛵','Saiu para entrega'),
+      ('completed','🏁','Entregue')
+    ] %}
+      <div class="{{ 'done' if loop.index0 <= current else '' }}"><span>{{ icon }}</span><b>{{ label }}</b></div>
+    {% endfor %}
+  </div>
+  <div class="order-box">
+    {% for item in items %}<div><span>{{ item.quantity }}x {{ item.product_name }}</span><strong>{{ (item.unit_price * item.quantity)|brl }}</strong></div>{% endfor %}
+    <hr><div class="total"><span>Total</span><strong>{{ order.total|brl }}</strong></div>
+  </div>
+  <form action="{{ url_for('finish_order', order_id=order.id) }}" method="post">
+    <button class="btn primary">Voltar ao início</button>
+  </form>
+  <p><small>Esta página pode ser atualizada para consultar o novo status.</small></p>
+</section>
+{% endblock %}

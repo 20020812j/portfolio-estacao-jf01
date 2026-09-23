@@ -1,0 +1,14 @@
+<article class="product-card">
+  <img src="{{ product['image'] }}" alt="{{ product['name'] }}" loading="lazy">
+  <div class="product-body">
+    <span class="category">{{ product['category'] }}</span>
+    <h3>{{ product['name'] }}</h3>
+    <p>{{ product['description'] }}</p>
+    <div class="product-footer">
+      <strong>{{ product['price']|brl }}</strong>
+      <form action="{{ url_for('add_cart', product_id=product['id']) }}" method="post" class="ajax-cart">
+        <button class="btn small primary">+ Adicionar</button>
+      </form>
+    </div>
+  </div>
+</article>

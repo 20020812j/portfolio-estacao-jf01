@@ -1,0 +1,23 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><h1>Agenda</h1></div>
+<form class="card form-grid" method="post">
+<label>Paciente<select name="paciente_id" required>
+  <option value="" selected disabled>Selecione um paciente</option>
+  {% for p in pacientes %}<option value="{{ p.id }}">{{ p.nome }}</option>{% endfor %}
+</select></label>
+<label>Data e horário<input type="datetime-local" name="inicio" required></label>
+<label class="full">Observações<textarea name="observacoes"></textarea></label>
+<div class="full"><button class="btn primary" type="submit">Agendar</button></div>
+</form>
+<section class="card"><h2>Próximos atendimentos</h2>
+{% if itens %}
+<ul class="record-list">
+{% for a in itens %}
+<li class="row-line"><span>{{ a.inicio.strftime('%d/%m/%Y %H:%M') }}</span><span>{{ pacientes_map.get(a.paciente_id).nome if pacientes_map.get(a.paciente_id) else 'Paciente' }}</span><span class="badge">{{ a.status }}</span></li>
+{% endfor %}
+</ul>
+{% else %}<p class="muted">Nenhum agendamento.</p>{% endif %}
+</section>
+{% endblock %}

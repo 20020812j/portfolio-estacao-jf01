@@ -1,0 +1,14 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>Meu perfil</h1>
+<form class="card form-grid" method="post">
+<label>Nome<input name="nome" value="{{ current_user.nome }}" required autocomplete="name"></label>
+<label>CREFITO<input name="crefito" value="{{ current_user.crefito or '' }}"></label>
+<label>Especialidade<input name="especialidade" value="{{ current_user.especialidade or '' }}"></label>
+<label>Telefone<input name="telefone" value="{{ current_user.telefone or '' }}" autocomplete="tel"></label>
+<label>E-mail<input type="email" name="email" value="{{ current_user.email or '' }}" autocomplete="email"></label>
+<label>Nova senha<input type="password" name="nova_senha" placeholder="Deixe vazio para manter" autocomplete="new-password"></label>
+<div class="full"><button class="btn primary" type="submit">Salvar perfil</button></div>
+</form>
+{% endblock %}

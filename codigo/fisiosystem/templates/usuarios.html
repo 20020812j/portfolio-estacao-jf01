@@ -1,0 +1,19 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><h1>Fisioterapeutas</h1><a class="btn primary" href="{{ url_for('novo_usuario') }}">+ Novo fisioterapeuta</a></div>
+<div class="card table-wrap"><table>
+<caption class="visually-hidden">Lista de fisioterapeutas</caption>
+<thead><tr><th scope="col">Nome</th><th scope="col">Usuário</th><th scope="col">CREFITO</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Ações</span></th></tr></thead>
+<tbody>
+{% for u in usuarios %}
+<tr>
+<td data-label="Nome">{{ u.nome }}{% if u.is_admin %} <span class="badge">Admin</span>{% endif %}</td>
+<td data-label="Usuário">{{ u.username }}</td>
+<td data-label="CREFITO">{{ u.crefito or '-' }}</td>
+<td data-label="Status">{{ 'Ativo' if u.ativo else 'Inativo' }}</td>
+<td data-label="Ações">{% if not u.is_admin %}<form method="post" action="{{ url_for('toggle_usuario', usuario_id=u.id) }}" onsubmit="return {{ 'confirm(\'Desativar ' ~ u.nome ~ '?\')' if u.ativo else 'true' }}"><button class="btn small">{{ 'Desativar' if u.ativo else 'Ativar' }}<span class="visually-hidden"> {{ u.nome }}</span></button></form>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+{% endblock %}

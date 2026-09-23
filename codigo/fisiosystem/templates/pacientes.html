@@ -1,0 +1,26 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><h1>Pacientes</h1><a class="btn primary" href="{{ url_for('novo_paciente') }}">+ Novo paciente</a></div>
+<form class="search" method="get" role="search">
+  <label for="busca-paciente" class="visually-hidden">Buscar paciente por nome</label>
+  <input id="busca-paciente" name="q" value="{{ q }}" placeholder="Buscar por nome">
+  <button class="btn" type="submit">Buscar</button>
+</form>
+<div class="card table-wrap">
+<table>
+<caption class="visually-hidden">Lista de pacientes</caption>
+<thead><tr><th scope="col">Nome</th><th scope="col">Telefone</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Ações</span></th></tr></thead>
+<tbody>
+{% for p in pacientes %}
+<tr>
+  <td data-label="Nome">{{ p.nome }}</td>
+  <td data-label="Telefone">{{ p.telefone or '-' }}</td>
+  <td data-label="Status"><span class="badge">{{ p.status }}</span></td>
+  <td data-label="Ações"><a class="btn small" href="{{ url_for('ficha', paciente_id=p.id) }}">Abrir ficha<span class="visually-hidden"> de {{ p.nome }}</span></a></td>
+</tr>
+{% else %}<tr><td colspan="4">Nenhum paciente encontrado.</td></tr>{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

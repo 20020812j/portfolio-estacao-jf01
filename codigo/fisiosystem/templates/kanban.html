@@ -1,0 +1,28 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>Kanban de pacientes</h1>
+<div class="kanban">
+{% for status, titulo in [('avaliacao','Avaliação'),('tratamento','Em tratamento'),('reavaliacao','Reavaliação'),('alta','Alta')] %}
+<section class="kanban-col" aria-labelledby="kanban-col-{{ status }}">
+<h2 id="kanban-col-{{ status }}">{{ titulo }}</h2>
+{% for p in grupos[status] %}
+<div class="kanban-card">
+  <strong>{{ p.nome }}</strong>
+  <a href="{{ url_for('ficha', paciente_id=p.id) }}">Abrir ficha<span class="visually-hidden"> de {{ p.nome }}</span></a>
+  <form method="post" action="{{ url_for('atualizar_status', paciente_id=p.id) }}">
+    <label class="visually-hidden" for="status-{{ p.id }}">Novo status de {{ p.nome }}</label>
+    <select id="status-{{ p.id }}" name="status">
+      <option value="avaliacao" {{ 'selected' if status == 'avaliacao' }}>Avaliação</option>
+      <option value="tratamento" {{ 'selected' if status == 'tratamento' }}>Tratamento</option>
+      <option value="reavaliacao" {{ 'selected' if status == 'reavaliacao' }}>Reavaliação</option>
+      <option value="alta" {{ 'selected' if status == 'alta' }}>Alta</option>
+    </select>
+    <button class="btn small" type="submit">Mover</button>
+  </form>
+</div>
+{% endfor %}
+</section>
+{% endfor %}
+</div>
+{% endblock %}

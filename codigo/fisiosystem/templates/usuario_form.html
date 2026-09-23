@@ -1,0 +1,13 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>Novo fisioterapeuta</h1>
+<form class="card form-grid" method="post">
+<label>Nome<input name="nome" required autocomplete="name"></label>
+<label>Usuário<input name="username" required autocomplete="username"></label>
+<label>Senha<input type="password" name="senha" required minlength="6" autocomplete="new-password"></label>
+<label>CREFITO<input name="crefito"></label>
+<label>Especialidade<input name="especialidade"></label>
+<div class="full"><button class="btn primary" type="submit">Criar fisioterapeuta</button></div>
+</form>
+{% endblock %}

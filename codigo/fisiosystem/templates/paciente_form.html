@@ -1,0 +1,16 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<h1>Novo paciente</h1>
+<p class="muted">Campos com <span aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> são obrigatórios.</p>
+<form class="card form-grid" method="post" data-confirm-submit="false">
+  <label>Nome completo <span aria-hidden="true">*</span><input name="nome" required autocomplete="name"></label>
+  <label>CPF<input name="cpf" autocomplete="off" inputmode="numeric"></label>
+  <label>Data de nascimento<input type="date" name="data_nascimento"></label>
+  <label>Telefone<input name="telefone" autocomplete="tel" inputmode="tel"></label>
+  <label>E-mail<input type="email" name="email" autocomplete="email"></label>
+  <label>Profissão<input name="profissao"></label>
+  <label class="full">Endereço<input name="endereco" autocomplete="street-address"></label>
+  <div class="full"><button class="btn primary" type="submit">Salvar paciente</button></div>
+</form>
+{% endblock %}

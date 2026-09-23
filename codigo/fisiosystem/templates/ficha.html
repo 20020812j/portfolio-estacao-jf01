@@ -1,0 +1,50 @@
+\
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head">
+  <div><h1>{{ paciente.nome }}</h1><p>{{ paciente.telefone or '' }} · Status: {{ paciente.status }}</p></div>
+  <div class="actions">
+    <a class="btn primary" href="{{ url_for('nova_avaliacao', paciente_id=paciente.id) }}">+ Avaliação</a>
+    <a class="btn" href="{{ url_for('nova_evolucao', paciente_id=paciente.id) }}">+ Evolução</a>
+    <a class="btn" href="{{ url_for('nova_reavaliacao', paciente_id=paciente.id) }}">Reavaliar</a>
+    <a class="btn" href="{{ url_for('registrar_alta', paciente_id=paciente.id) }}">Alta</a>
+    <a class="btn" href="{{ url_for('relatorio', paciente_id=paciente.id) }}">Relatório</a>
+  </div>
+</div>
+
+{% if chart_values %}
+<section class="card"><h2>Evolução da dor após as sessões</h2><canvas id="evaChart" role="img" aria-label="Gráfico de linha mostrando a evolução da escala de dor (EVA) do paciente ao longo das sessões"></canvas></section>
+<script>
+new Chart(document.getElementById('evaChart'), {
+  type: 'line',
+  data: { labels: {{ chart_labels|tojson }}, datasets: [{ label: 'EVA após sessão', data: {{ chart_values|tojson }}, tension: .25 }] },
+  options: { scales: { y: { min: 0, max: 10 } } }
+});
+</script>
+{% endif %}
+
+<section class="card"><h2>Avaliações</h2>
+{% for a in avaliacoes %}
+<div class="record"><strong>{{ a.data_avaliacao.strftime('%d/%m/%Y') }}</strong> · EVA {{ a.eva if a.eva is not none else '-' }} · IMC {{ a.imc or '-' }}
+<p>{{ a.queixa_principal or 'Sem queixa registrada.' }}</p></div>
+{% else %}<p class="muted">Nenhuma avaliação.</p>{% endfor %}
+</section>
+
+<section class="card"><h2>Evoluções</h2>
+{% for e in evolucoes %}
+<div class="record"><strong>Sessão {{ e.numero_sessao or '-' }} — {{ e.data_sessao.strftime('%d/%m/%Y') }}</strong>
+<p>EVA: {{ e.eva_antes if e.eva_antes is not none else '-' }} → {{ e.eva_depois if e.eva_depois is not none else '-' }}</p>
+<p>{{ e.evolucao or '' }}</p></div>
+{% else %}<p class="muted">Nenhuma evolução.</p>{% endfor %}
+</section>
+
+<section class="card"><h2>Reavaliações</h2>
+{% for r in reavaliacoes %}
+<div class="record"><strong>{{ r.data_reavaliacao.strftime('%d/%m/%Y') }}</strong> · EVA {{ r.eva if r.eva is not none else '-' }} · IMC {{ r.imc or '-' }}<p>{{ r.observacoes or '' }}</p></div>
+{% else %}<p class="muted">Nenhuma reavaliação.</p>{% endfor %}
+</section>
+
+{% if alta %}
+<section class="card success-card"><h2>Alta fisioterapêutica</h2><p><strong>{{ alta.data_alta.strftime('%d/%m/%Y') }}</strong></p><p>{{ alta.condicao_final or '' }}</p></section>
+{% endif %}
+{% endblock %}

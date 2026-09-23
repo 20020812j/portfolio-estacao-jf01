@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Carrinho | Cláudia Santos{% endblock %}
+{% block content %}
+<section class="checkout-shell">
+  <div class="checkout-main">
+    <div class="section-title left"><h1>Seu carrinho</h1></div>
+    {% if items %}
+    <form method="post" action="{{ url_for('update_cart') }}">
+      <div class="cart-list">
+      {% for item in items %}
+        <div class="cart-item">
+          <img src="{{ item.image }}" alt="">
+          <div><h3>{{ item.name }}</h3><small>{{ item.price|brl }} cada</small></div>
+          <input type="number" min="0" max="20" name="qty_{{ item.id }}" value="{{ item.quantity }}">
+          <strong>{{ item.total|brl }}</strong>
+          <button class="link-danger" formaction="{{ url_for('remove_cart', product_id=item.id) }}" formmethod="post">Remover</button>
+        </div>
+      {% endfor %}
+      </div>
+      <button class="btn outline">Atualizar carrinho</button>
+    </form>
+    {% else %}
+      <div class="empty"><span>🛒</span><h2>Seu carrinho está vazio</h2><a class="btn primary" href="{{ url_for('menu') }}">Ver cardápio</a></div>
+    {% endif %}
+  </div>
+  {% if items %}
+  <aside class="summary">
+    <h2>Resumo</h2>
+    <div><span>Subtotal</span><strong>{{ subtotal|brl }}</strong></div>
+    <div><span>Entrega</span><small>Calculada no checkout</small></div>
+    <hr>
+    <div class="total"><span>Total parcial</span><strong>{{ subtotal|brl }}</strong></div>
+    <a class="btn primary full" href="{{ url_for('checkout') }}">Continuar</a>
+  </aside>
+  {% endif %}
+</section>
+{% endblock %}
